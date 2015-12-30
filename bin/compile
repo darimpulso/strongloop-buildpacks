@@ -54,17 +54,6 @@ PATH=$PATH:$build_dir/vendor/node/bin
 # Run subsequent node/npm commands from the build path
 cd $build_dir
 
-# If node_modules directory is checked into source control then
-# rebuild any native deps. Otherwise, restore from the build cache.
-if test -d $build_dir/node_modules; then
-  status "Using existing node_modules directory"
-  status "Rebuilding any native dependencies"
-  npm rebuild 2>&1 | indent
-elif test -d $cache_dir/node_modules; then
-  status "Restoring node_modules from cache"
-  cp -r $cache_dir/node_modules $build_dir/
-fi
-
 status "Installing StrongLoop dependencies"
 npm install -g strongloop
 # Make npm output to STDOUT instead of its default STDERR
@@ -73,11 +62,6 @@ npm install --production 2>&1 | indent
 
 status "Pruning unused dependencies"
 npm prune 2>&1 | indent
-
-status "Caching node_modules directory for future builds"
-rm -rf $cache_dir
-mkdir -p $cache_dir
-test -d $build_dir/node_modules && cp -r $build_dir/node_modules $cache_dir/
 
 status "Cleaning up node-gyp and npm artifacts"
 rm -rf "$build_dir/.node-gyp"
