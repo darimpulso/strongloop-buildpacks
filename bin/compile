@@ -4,8 +4,6 @@ set -e            # fail fast
 set -o pipefail   # don't ignore exit codes when piping output
 # set -x          # enable debugging
 
-npm install -g lodash
-
 # Configure directories
 build_dir=$1
 cache_dir=$2
@@ -57,7 +55,7 @@ PATH=$PATH:$build_dir/vendor/node/bin
 cd $build_dir
 
 status "Installing StrongLoop dependencies"
-npm install -g strongloop
+npm install -g lodash && npm install -g strongloop
 # Make npm output to STDOUT instead of its default STDERR
 status "Installing dependencies"
 npm install --production 2>&1 | indent
